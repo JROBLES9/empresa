@@ -11,7 +11,7 @@ export interface Proyecto {
 }
 
 export interface Empleado {
-    idEmpleado: number;
+    id_empleado: number;
     nombre: string;
     apellido: string;
     fechaNacimiento: Date;
