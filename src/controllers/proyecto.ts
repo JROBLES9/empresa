@@ -10,7 +10,15 @@ export class ProyectoController {
             if (!result.success) {
                 throw result.error;
             }
-            const newProyecto = await proyecto.create(result.data);
+
+            // Convertir las fechas de string a Date
+            const data = {
+                ...result.data,
+                fecha_inicio: new Date(result.data.fecha_inicio),
+                fecha_fin: new Date(result.data.fecha_fin),
+            };
+
+            const newProyecto = await proyecto.create(data as Proyecto);
             res.json({ message: "Proyecto creado exitosamente.", id: (newProyecto as unknown as Proyecto).id_proyecto });
         } catch (error) {
             res.status(500).json({ message: "Error al crear el proyecto.", error });
@@ -41,7 +49,15 @@ export class ProyectoController {
             if (!result.success) {
                 throw result.error;
             }
-            await proyecto.update(result.data, { where: { id_Proyecto: req.params.id } });
+            
+        // Convertir las fechas de string a Date solo si están definidas
+        const data = {
+            ...result.data,
+            fecha_inicio: result.data.fecha_inicio ? new Date(result.data.fecha_inicio) : undefined,
+            fecha_fin: result.data.fecha_fin ? new Date(result.data.fecha_fin) : undefined,
+        };
+
+            await proyecto.update(data, { where: { id_proyecto: req.params.id } });
             res.json({ message: "Proyecto actualizado exitosamente." });
         } catch (error) {
             res.status(500).json({ message: "Error al actualizar el proyecto.", error });
@@ -50,7 +66,7 @@ export class ProyectoController {
 
     public static async deleteProyecto(req: Request, res: Response) {
         try {
-            await proyecto.destroy({ where: { id_Proyecto: req.params.id } });
+            await proyecto.destroy({ where: { id_proyecto: req.params.id } });
             res.json({ message: "Proyecto eliminado exitosamente." });
         } catch (error) {
             res.status(500).json({ message: "Error al eliminar el proyecto.", error });
