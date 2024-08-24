@@ -11,7 +11,7 @@ export class ProyectoController {
                 throw result.error;
             }
             const newProyecto = await proyecto.create(result.data);
-            res.json({ message: "Proyecto creado exitosamente.", id: (newProyecto as unknown as Proyecto).idProyecto });
+            res.json({ message: "Proyecto creado exitosamente.", id: (newProyecto as unknown as Proyecto).id_proyecto });
         } catch (error) {
             res.status(500).json({ message: "Error al crear el proyecto.", error });
         }
