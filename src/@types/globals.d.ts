@@ -1,10 +1,10 @@
 export interface Proyecto {
     id_proyecto: number;
-    nombreProyecto: string;
+    nombre_proyecto: string;
     descripcion: string;
-    fechaInicio: Date;
-    fechaFin: Date;
-    porcentajeCompletado: number;
+    fecha_inicio: Date;
+    fecha_fin: Date;
+    porcentaje_completado: number;
     estado: string;
 }
 
