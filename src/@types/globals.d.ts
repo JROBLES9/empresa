@@ -1,7 +1,5 @@
-import { boolean } from "zod";
-
 export interface Proyecto {
-    idProyecto: number;
+    id_proyecto: number;
     nombreProyecto: string;
     descripcion: string;
     fechaInicio: Date;
@@ -22,4 +20,11 @@ export interface Empleado {
     salario: number;
     cargo: string;
     idProyecto: number;
+}
+
+export interface Alerta {
+    id_alertas: number;
+    nombre: string;
+    dias: number;
+    id_proyectos: number;
 }
