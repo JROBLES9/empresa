@@ -4,6 +4,7 @@ import cors from 'cors';
 
 import proyecto from './routes/proyecto';
 import empleado from './routes/empleado';
+import alerta from './routes/alerta';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use('/proyecto', proyecto);
 app.use('/empleado', empleado);
+app.use('/alerta', alerta);
 
 
 const port = process.env.SERVER_PORT || 3000;
