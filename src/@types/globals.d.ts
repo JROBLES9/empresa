@@ -28,3 +28,8 @@ export interface Alerta {
     dias: number;
     id_proyectos: number;
 }
+
+export interface responseAlerta {
+    Proyecto: string;
+    Descripcion: string;
+}
