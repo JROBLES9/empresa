@@ -1,5 +1,5 @@
 export interface Proyecto {
-    id_proyecto: number;
+    id_proyecto?: number;
     nombre_proyecto: string;
     descripcion: string;
     fecha_inicio: Date;
@@ -9,7 +9,7 @@ export interface Proyecto {
 }
 
 export interface Empleado {
-    id_empleado: number;
+    id_empleado?: number;
     nombre: string;
     apellido: string;
     fechaNacimiento: Date;
@@ -23,7 +23,7 @@ export interface Empleado {
 }
 
 export interface Alerta {
-    id_alertas: number;
+    id_alertas?: number;
     nombre: string;
     dias: number;
     id_proyectos: number;
