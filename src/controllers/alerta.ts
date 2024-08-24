@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import AlertaModel from '../models/alerta';
 import proyectoModel from '../models/proyecto';
+import { responseAlerta } from '../@types/globals';
+import { Op } from 'sequelize';
 
 export class AlertaController {
     public static async createAlerta(req: Request, res: Response) {
@@ -9,38 +11,88 @@ export class AlertaController {
             res.json({ message: "Alerta creada exitosamente.", id: newAlerta.id_alertas });
         } catch (error) {
             res.status(500).json({ message: "Error al crear la alerta.", error });
-        }
+         }
     }
 
     public static async getAlertas(_req: Request, res: Response) {
         try {
             const alertas = await AlertaModel.findAll();
+            var respuesta: responseAlerta[] = [];
 
-            const alertasConVencimiento = await Promise.all(alertas.map(async (alerta) => {
-                const proyecto = await proyectoModel.findByPk(alerta.id_proyectos);
+            for (const alerta of alertas) {
+                const proyecto = await proyectoModel.findOne({
+                    where: {
+                        id_proyecto: alerta.id_proyectos,
+                        [Op.or]: [
+                            { estado: 'Activo' },
+                            { estado: 'En progreso' }
+                        ]
+                    }
+                });
                 if (proyecto) {
                     const fechaVencimiento = new Date(proyecto.fecha_fin);
                     const fechaActual = new Date();
                     const diasRestantes = Math.ceil((fechaVencimiento.getTime() - fechaActual.getTime()) / (1000 * 60 * 60 * 24));
-
-                    return {
-                        ...alerta.toJSON(),
-                        proyectoVencidoEn: diasRestantes < 0 ? `Vencido hace ${Math.abs(diasRestantes)} días` : `Vence en ${diasRestantes} días`
-                    };
+            
+                    console.log(diasRestantes);
+            
+                    // si dias restantes es menor a alerta.dias entonces se muestra la alerta
+                    const proyectoVencidoEn = diasRestantes < 0 ? `Vencido hace ${Math.abs(diasRestantes)} días` : `Vence en ${diasRestantes} días`;
+            
+                    console.log(proyectoVencidoEn);
+            
+                    respuesta.push({
+                        Proyecto: proyecto.nombre_proyecto,
+                        Descripcion: proyectoVencidoEn
+                    });
                 }
-                return alerta;
-            }));
+            }
 
-            res.json(alertasConVencimiento);
-        } catch (error) {
-            res.status(500).json({ message: "Error al obtener las alertas.", error });
+            console.log(respuesta);
+
+            res.json(respuesta);
+        } catch (error: any) {
+            res.status(500).json({ message: "Error al obtener las alertas.", error: error.message });
         }
     }
 
     public static async getAlerta(req: Request, res: Response) {
         try {
-            const alertaEncontrada = await AlertaModel.findByPk(req.params.id);
-            res.json(alertaEncontrada);
+            const alerta = await AlertaModel.findByPk(req.params.id);
+            if(alerta) {
+                const proyecto = await proyectoModel.findOne({
+                    where: {
+                        id_proyecto: alerta.id_proyectos,
+                        [Op.or]: [
+                            { estado: 'Activo' },
+                            { estado: 'En progreso' }
+                        ]
+                    }
+                });
+                if (proyecto) {
+                    const fechaVencimiento = new Date(proyecto.fecha_fin);
+                    const fechaActual = new Date();
+                    const diasRestantes = Math.ceil((fechaVencimiento.getTime() - fechaActual.getTime()) / (1000 * 60 * 60 * 24));
+            
+                    console.log(diasRestantes);
+            
+                    // si dias restantes es menor a alerta.dias entonces se muestra la alerta
+                    const proyectoVencidoEn = diasRestantes < 0 ? `Vencido hace ${Math.abs(diasRestantes)} días` : `Vence en ${diasRestantes} días`;
+            
+                    console.log(proyectoVencidoEn);
+            
+                    const respuesta: responseAlerta = ({
+                        Proyecto: proyecto.nombre_proyecto,
+                        Descripcion: proyectoVencidoEn
+                    });
+    
+                    res.json(respuesta);
+                }
+
+                res.json(null);
+
+            }
+            
         } catch (error) {
             res.status(500).json({ message: "Error al obtener la alerta.", error });
         }
