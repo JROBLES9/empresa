@@ -69,12 +69,9 @@ export class AlertaController {
                     const fechaActual = new Date();
                     const diasRestantes = Math.ceil((fechaVencimiento.getTime() - fechaActual.getTime()) / (1000 * 60 * 60 * 24));
             
-                    console.log(diasRestantes);
             
                     // si dias restantes es menor a alerta.dias entonces se muestra la alerta
                     const proyectoVencidoEn = diasRestantes < 0 ? `Vencido hace ${Math.abs(diasRestantes)} días` : `Vence en ${diasRestantes} días`;
-            
-                    console.log(proyectoVencidoEn);
             
                     const respuesta: responseAlerta = ({
                         Proyecto: proyecto.nombre_proyecto,
