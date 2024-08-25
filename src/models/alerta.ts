@@ -8,6 +8,7 @@ class AlertaModel extends Model<Alerta> implements Alerta {
     public nombre!: string;
     public dias!: number;
     public id_proyectos!: number;
+    public state!: boolean;
 }
 
 AlertaModel.init({
@@ -27,6 +28,11 @@ AlertaModel.init({
     id_proyectos: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    state: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     }
 }, {
     sequelize,
