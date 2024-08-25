@@ -7,11 +7,11 @@ import { Op } from 'sequelize';
 export class AlertaController {
     public static async createAlerta(req: Request, res: Response) {
         try {
-            const newAlerta = await AlertaModel.create(req.body) as unknown as { id_alertas: number };
-            res.json({ message: "Alerta creada exitosamente.", id: newAlerta.id_alertas });
-        } catch (error) {
-            res.status(500).json({ message: "Error al crear la alerta.", error });
-         }
+            const newAlerta = await AlertaModel.create(req.body);
+            res.status(201).json({ message: "Alerta creada exitosamente.", id: newAlerta.id_alertas });
+        } catch (error: any) {
+            res.status(500).json({ message: "Error al crear la alerta.", error: error.message });
+        }
     }
 
     public static async getAlertas(_req: Request, res: Response) {
@@ -34,12 +34,9 @@ export class AlertaController {
                     const fechaActual = new Date();
                     const diasRestantes = Math.ceil((fechaVencimiento.getTime() - fechaActual.getTime()) / (1000 * 60 * 60 * 24));
             
-                    console.log(diasRestantes);
             
                     // si dias restantes es menor a alerta.dias entonces se muestra la alerta
                     const proyectoVencidoEn = diasRestantes < 0 ? `Vencido hace ${Math.abs(diasRestantes)} días` : `Vence en ${diasRestantes} días`;
-            
-                    console.log(proyectoVencidoEn);
             
                     respuesta.push({
                         Proyecto: proyecto.nombre_proyecto,
@@ -48,11 +45,9 @@ export class AlertaController {
                 }
             }
 
-            console.log(respuesta);
-
-            res.json(respuesta);
+            return res.status(200).json(respuesta);
         } catch (error: any) {
-            res.status(500).json({ message: "Error al obtener las alertas.", error: error.message });
+            return res.status(500).json({ message: "Error al obtener las alertas.", error: error.message });
         }
     }
 
@@ -86,33 +81,33 @@ export class AlertaController {
                         Descripcion: proyectoVencidoEn
                     });
     
-                    res.json(respuesta);
+                    return res.status(200).json(respuesta);
                 }
 
-                res.json(null);
+                return res.status(200).json(null);
 
             }
             
-        } catch (error) {
-            res.status(500).json({ message: "Error al obtener la alerta.", error });
+        } catch (error: any) {
+            return res.status(500).json({ message: "Error al obtener la alerta.", error: error.message });
         }
     }
 
     public static async updateAlerta(req: Request, res: Response) {
         try {
             await AlertaModel.update(req.body, { where: { id_alertas: req.params.id } });
-            res.json({ message: "Alerta actualizada exitosamente." });
-        } catch (error) {
-            res.status(500).json({ message: "Error al actualizar la alerta.", error });
+            res.status(200).json({ message: "Alerta actualizada exitosamente." });
+        } catch (error: any) {
+            res.status(500).json({ message: "Error al actualizar la alerta.", error: error.message });
         }
     }
 
     public static async deleteAlerta(req: Request, res: Response) {
         try {
-            await AlertaModel.destroy({ where: { id_alertas: req.params.id } });
-            res.json({ message: "Alerta eliminada exitosamente." });
-        } catch (error) {
-            res.status(500).json({ message: "Error al eliminar la alerta.", error });
+            await AlertaModel.update({ state: false }, { where: { id_alertas: req.params.id } });
+            return res.status(200).json({ message: "Alerta eliminada exitosamente." });
+        } catch (error: any) {
+            return res.status(500).json({ message: "Error al eliminar la alerta.", error: error.message });
         }
     }
 }
