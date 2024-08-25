@@ -5,6 +5,7 @@ export const alertaSchema = z.object({
     nombre: z.string().max(45),
     dias: z.number().int(),
     id_proyectos: z.number().int(),
+    state: z.boolean().optional()
 });
 
 export const validateAlerta = (data: any) => {
