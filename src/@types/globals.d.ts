@@ -27,6 +27,7 @@ export interface Alerta {
     nombre: string;
     dias: number;
     id_proyectos: number;
+    state: boolean;
 }
 
 export interface responseAlerta {
